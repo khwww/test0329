@@ -65,7 +65,6 @@ const CardContent = () => {
             Authorization: token
           }
         });
-        setLikeCount(likeCount + 1); // 좋아요 수 업데이트
       } else {
         // 좋아요 취소
         await axios.delete(`http://43.202.133.160:8000/api/card-news/${cardId}/like`, {
@@ -73,7 +72,6 @@ const CardContent = () => {
             Authorization: token
           }
         });
-        setLikeCount(likeCount - 1); // 좋아요 수 업데이트
       }
       // 좋아요 상태 업데이트
       setLiked(!liked);
@@ -110,9 +108,10 @@ const CardContent = () => {
             <Typography variant="body1" dangerouslySetInnerHTML={{ __html: cardData.content.notice }} />
             {/* 좋아요 표시 */}
             <div style={{ textAlign: 'center', marginTop: '70px' }}>
-              <LargeIconButton onClick={handleLikeClick}> 
-                {liked ? <FavoriteIcon color="error" style={{ fontSize: "5rem" }} /> : <FavoriteBorderIcon style={{ fontSize: "5rem" }} />}
-              </LargeIconButton>
+            <IconButton onClick={handleLikeClick}>
+              {liked ? <FavoriteIcon color="error" style={{ fontSize: "5rem" }} /> 
+              : <FavoriteBorderIcon style={{ fontSize: "5rem" }} />}
+            </IconButton>
             </div>
             <Typography variant="body2" style={{ textAlign: 'center', marginTop: '10px' }}>
               좋아요</Typography>
