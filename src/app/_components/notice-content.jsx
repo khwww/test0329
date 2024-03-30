@@ -15,7 +15,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
 }));
 
 const StyledOutlinedButton = styled(Button)(({ theme }) => ({
-  marginRight: theme.spacing(1),
+  marginRight: theme.spacing(2), // Increased margin for spacing between attachment buttons
   marginBottom: theme.spacing(1),
   '&:hover': {
     backgroundColor: blue[500],
@@ -76,6 +76,11 @@ const BusinessNoticePage = () => {
     }
   };
 
+  // HTML 문자열을 파싱하여 JSX로 변환하는 함수
+  const parseHTML = (htmlString) => {
+    return <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+  };
+
   return (
     <div>
       {articleData && (
@@ -90,25 +95,12 @@ const BusinessNoticePage = () => {
                 <TableContainer>
                   <Table>
                     <TableBody>
-                      {Object.entries(articleData.a_content.info_box).reduce((accumulator, [key, value], index) => {
-                        if (index % 2 === 0) {
-                          accumulator.push(
-                            <TableRow key={index}>
-                              <TableCell><strong>{key}: </strong></TableCell>
-                              <TableCell>{value}</TableCell>
-                            </TableRow>
-                          );
-                        } else {
-                          accumulator[accumulator.length - 1] = (
-                            <>
-                              {accumulator[accumulator.length - 1]}
-                              <TableCell><strong>{key}: </strong></TableCell>
-                              <TableCell>{value}</TableCell>
-                            </>
-                          );
-                        }
-                        return accumulator;
-                      }, [])}
+                      {Object.entries(articleData.a_content.info_box).map(([key, value], index) => (
+                        <TableRow key={index}>
+                          <TableCell><strong>{key}: </strong></TableCell>
+                          <TableCell>{value}</TableCell>
+                        </TableRow>
+                      ))}
                     </TableBody>
                   </Table>
                 </TableContainer>
@@ -116,28 +108,14 @@ const BusinessNoticePage = () => {
             )}
             <Divider sx={{ marginY: 1 }} />
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              {articleData.a_content.desc_list.map((descItem, index) => (
-                <div key={index}>
-                  <Typography variant="h5" gutterBottom style={{ fontWeight: 'bold' }}>{descItem.title}</Typography>
-                  {descItem.infos.map((infoItem, subIndex) => (
-                    <Typography key={subIndex} variant="body1" component="div" style={{ marginBottom: '8px' }}>
-                      {Object.entries(infoItem).map(([key, value]) => (
-                        <div key={key}>
-                          {value}
-                        </div>
-                      ))}
-                    </Typography>
-                  ))}
-                  <Divider sx={{ marginY: 2 }} />
-                </div>
-              ))}
+              {parseHTML(articleData.a_content.desc_list)}
             </Box>
           </StyledPaper>
           <StyledPaper>
             <Typography variant="h5" sx={{ fontWeight: 'bold', marginBottom: 1 }}>첨부파일</Typography>
             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
               {articleData.a_content.attachment_list.map((attachment, index) => (
-                   <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 1 }}>
+                   <Box key={index} sx={{ display: 'flex', justifyContent: 'center', marginTop: 1 }}>
                   <StyledOutlinedButton
                     onClick={() => handleAttachmentButtonClick(attachment.url)}
                     color="primary"
@@ -157,7 +135,7 @@ const BusinessNoticePage = () => {
               {liked ? <FavoriteIcon color="error" style={{ fontSize: "5rem" }} /> 
               : <FavoriteBorderIcon style={{ fontSize: "5rem" }} />}
             </IconButton>
-            <Typography variant="body2">좋아요</Typography>
+            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>좋아요</Typography>
           </StyledPaper>
         </div>
       )}
